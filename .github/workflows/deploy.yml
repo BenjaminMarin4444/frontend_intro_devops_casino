@@ -6,8 +6,27 @@ on:
       - deploy
 
 jobs:
+  test:
+    name: Pruebas unitarias (Karma/Jasmine)
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Configurar Node 20
+      uses: actions/setup-node@v4
+      with:
+        node-version: "20"
+
+    - name: Instalar dependencias
+      run: npm install
+
+    - name: Correr pruebas (modo CI, sin interaccion)
+      run: npm test -- --watch=false --browsers=ChromeHeadless
+
   deploy:
     name: Deploy to ECR and EKS
+    needs: test
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Code
